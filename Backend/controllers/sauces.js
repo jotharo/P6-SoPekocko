@@ -1,4 +1,4 @@
-// in controllers/stuff.js
+// CONTROLLER : Sauce
 
 const Sauce = require('../models/sauce'); // Récupération du modèle 'sauce'.
 
