@@ -10,12 +10,13 @@ const path = require('path'); // Import du path : ensemble de fonctions/proprié
 
 const mongoose = require('mongoose'); // Import du Plugin Mongoose pour se connecter à la data base MongoDB.
 
-mongoose.connect('----------', // Puis connexion à la base de données MongoDB.
+require("dotenv").config(); // Dotenv : masquage des informations de connexion à la BD à l'aide de variables d'environnement
 
+mongoose.connect('mongodb+srv://User01:User01Pswd@cluster0.acudl.mongodb.net/SoPekocko?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+  .catch(() => console.log('Connexion à MongoDB échouée !!'));
 
 // Création de l'application express
 

@@ -1,6 +1,6 @@
 // CONTROLLER : Sauce
 
-const Sauce = require('../models/sauce'); // Récupération du modèle 'sauce'.
+const Sauce = require('../models/sauces'); // Récupération du modèle 'sauce'.
 
 const fs = require('fs'); // File System : créer et gérer des fichiers pour y stocker ou lire des informations.
 

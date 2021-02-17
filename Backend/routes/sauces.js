@@ -6,18 +6,18 @@ const express = require('express'); // Import d'Express.
 
 const router = express.Router();  // express.Router : méthode Express de création de router.
 
-const sauceCtrl = require('../controllers/sauces'); // Import du controller pour la route 'sauce'
-
 const auth = require('../middleware/auth'); // Import du middleware d'authentification
 
 const multer = require('../middleware/multer-config'); // Import du middleware de gestion de fichiers entrants dans les requêtes HTTP
+
+const sauceCtrl = require('../controllers/sauces'); // Import du controller pour la route 'sauce'
 
 // Routes 'sauce'.
 
 // A noter : veillez à placer le middleware multer après authentification !
 // > sinon des images de requêtes non-authentifiées pourront être enregistrées dans le serveur. 
 
-router.get('/', auth, sauceCtrl.getAllSauce); //
+router.get('/', auth, sauceCtrl.getAllSauce); 
 router.get('/:id', auth, sauceCtrl.getOneSauce);
 router.post('/', auth, multer, sauceCtrl.createSauce);
 router.put('/:id', auth, multer, sauceCtrl.modifySauce);
