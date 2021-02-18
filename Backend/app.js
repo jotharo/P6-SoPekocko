@@ -8,13 +8,16 @@ const bodyParser = require('body-parser'); // Import de body-parser : pour extra
 
 const path = require('path'); // Import du path : ensemble de fonctions/propriétés pour manipuler des chemins vers des fichiers et répertoires.
 
+const cors = require('cors')
+
 const mongoose = require('mongoose'); // Import du Plugin Mongoose pour se connecter à la data base MongoDB.
 
 require("dotenv").config(); // Dotenv : masquage des informations de connexion à la BD à l'aide de variables d'environnement
 
 mongoose.connect('mongodb+srv://User01:User01Pswd@cluster0.acudl.mongodb.net/SoPekocko?retryWrites=true&w=majority',
   { useNewUrlParser: true,
-    useUnifiedTopology: true })
+    useUnifiedTopology: true,
+    useCreateIndex: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !!'));
 
@@ -30,6 +33,8 @@ const userRoutes = require('./routes/user');
 // Middlewares Express
 
 //.use() traite TOUTES les requêtes
+
+app.use(cors())
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

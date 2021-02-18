@@ -78,5 +78,45 @@ exports.deleteSauce = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));// Erreur sauce non trouvée.
 };
 
-exports.likeSauce = (req, res, next) => { 
+exports.likeSauce= (req, res, next) => { 
+
+  const userId = req.body.userId
+  const sauceId = req.params.id
+  const sauceLike = req.body.like
+  const nameSauce = req.body.name
+
+  switch (sauceLike) {
+
+    case 1: // Cas 1 : User aime/like la sauce.
+            Sauce.updateOne({ _id: sauceId}, { $inc: { likes: 1 }, $push: { usersLiked: userId } })
+                .then(() => res.status(200).json(log(`Vous aimez ${nameSauce} !`)))
+                .catch((error) => res.status(400).json(log(error)))
+            break;
+
+    case -1:// Cas 2 : User n'aime pas/dislike la sauce.
+            Sauce.updateOne({ _id: sauceId }, { $inc: { dislikes: 1 }, $push: { usersDisliked: userId } })
+                .then(() => res.status(200).json(log(`Vous n'aimez pas ${nameSauce} !`)))
+                .catch((error) => res.status(400).json(log(error)))
+            break;
+        
+    case 0:// Cas 3 : User retire son like ou son dislike
+            Sauce.findOne({ _id: sauceId })
+                .then((sauce) => {
+                    if (sauce.usersLiked.includes(userId)) {
+                        Sauces.updateOne({ _id: sauceId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 } })
+                            .then(() => res.status(200).json(log('Like annulé !')))
+                            .catch((error) => res.status(400).json(log(error)))
+                    }
+                    if (sauce.usersDisliked.includes(userId)) {
+                        Sauces.updateOne({ _id: sauceId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })
+                            .then(() => res.status(200).json(log('Dislike annulé !')))
+                            .catch((error) => res.status(400).json(log(error)))
+                    }
+                })
+                .catch((error) => res.status(500).json(log(error)))
+            break;
+
+        default:
+          console.error(' Impossible d accéder à la requête ! ');
+    }
 }
