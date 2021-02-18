@@ -7,6 +7,7 @@ const fs = require('fs'); // File System : créer et gérer des fichiers pour y 
 // Fonction pour obtenir toutes les sauces
 
 exports.getAllSauce = (req, res, next) => { 
+   
     Sauce.find().then(  // Méthode find : obtention de la liste complète des sauces présentes dans la BD.
       (sauces) => {
         res.status(200).json(sauces); // Succès : renvoit de l'array des sauces.
@@ -78,45 +79,53 @@ exports.deleteSauce = (req, res, next) => {
     .catch(error => res.status(500).json({ error }));// Erreur sauce non trouvée.
 };
 
-exports.likeSauce= (req, res, next) => { 
+// Fonction pour ajouter/supprimer 1 like/1 dislike sur une sauce.
 
-  const userId = req.body.userId
-  const sauceId = req.params.id
-  const sauceLike = req.body.like
-  const nameSauce = req.body.name
+exports.likeSauce = (req, res, next) => { 
 
-  switch (sauceLike) {
+  const userId = req.body.userId // Id de l'User
+  const sauceId = req.params.id // Id de la Sauce
+  const sauceLike = req.body.like // Nombre de like d'une Sauce
+  const nameSauce = req.body.name// Nom de la sauce
 
-    case 1: // Cas 1 : User aime/like la sauce.
-            Sauce.updateOne({ _id: sauceId}, { $inc: { likes: 1 }, $push: { usersLiked: userId } })
-                .then(() => res.status(200).json(log(`Vous aimez ${nameSauce} !`)))
-                .catch((error) => res.status(400).json(log(error)))
-            break;
+  Sauce.findOne({_id: req.params.id})// Methode pour chercher une sauce précise par id.
+  .then(sauce => { 
 
-    case -1:// Cas 2 : User n'aime pas/dislike la sauce.
-            Sauce.updateOne({ _id: sauceId }, { $inc: { dislikes: 1 }, $push: { usersDisliked: userId } })
-                .then(() => res.status(200).json(log(`Vous n'aimez pas ${nameSauce} !`)))
-                .catch((error) => res.status(400).json(log(error)))
-            break;
-        
-    case 0:// Cas 3 : User retire son like ou son dislike
-            Sauce.findOne({ _id: sauceId })
-                .then((sauce) => {
-                    if (sauce.usersLiked.includes(userId)) {
-                        Sauces.updateOne({ _id: sauceId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 } })
-                            .then(() => res.status(200).json(log('Like annulé !')))
-                            .catch((error) => res.status(400).json(log(error)))
+    switch (sauceLike) {
+
+      case 1: // Cas 1 : User aime/like la sauce.
+              if (!sauce.usersLiked.includes(userId)) {// Si on a PAS déjà liké - l'userId n'est PAS présent dans l'array usersLiked de la sauce:
+              Sauce.updateOne({ _id: sauceId}, { $push: { usersLiked: userId }, $inc: { likes: 1 } })// On push/ajoute l'userId dans l'array usersLiked + incrémente 1 like
+                  .then(() => res.status(200).json(log(`Vous aimez ${nameSauce} !!`)))
+                  .catch((error) => res.status(400).json(log(error)));
+              }
+              break;
+
+      case -1:// Cas 2 : User n'aime pas/dislike la sauce.
+              if (!sauce.usersDisliked.includes(userId)) {// Si on a PAS déjà disliké - l'userId n'est PAS présent dans l'array usersDisliked de la sauce:
+              Sauce.updateOne({ _id: sauceId }, { $push: { usersDisliked: userId }, $inc: { dislikes: 1 },})// On push/ajoute l'userId dans l'array usersDisliked + incrémente 1 dislike
+                  .then(() => res.status(200).json(log(`Vous n'aimez pas ${nameSauce} !`)))
+                  .catch((error) => res.status(400).json(log(error)));
+              }
+              break;
+          
+      case 0:// Cas 3 : User retire son like ou son dislike
+                      if (sauce.usersLiked.includes(userId)) {// Si on a déjà liké - l'userId est déjà présent dans l'array usersLiked de la sauce:
+                          Sauces.updateOne({ _id: sauceId }, { $pull: { usersLiked: userId }, $inc: { likes: -1 } }) // On pull/enlève l'userId + incrémente -1 like
+                              .then(() => res.status(200).json(log('Like annulé !')))
+                              .catch((error) => res.status(400).json(log(error)));
+                      }
+                      else if (sauce.usersDisliked.includes(userId)) {// Si on a déjà disliké - l'userId est déjà présent dans l'array usersDisliked de la sauce:
+                          Sauces.updateOne({ _id: sauceId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })// On pull/enlève l'userId + incrémente -1 dislike
+                              .then(() => res.status(200).json(log('Dislike annulé !')))
+                              .catch((error) => res.status(400).json(log(error)));
                     }
-                    if (sauce.usersDisliked.includes(userId)) {
-                        Sauces.updateOne({ _id: sauceId }, { $pull: { usersDisliked: userId }, $inc: { dislikes: -1 } })
-                            .then(() => res.status(200).json(log('Dislike annulé !')))
-                            .catch((error) => res.status(400).json(log(error)))
-                    }
-                })
-                .catch((error) => res.status(500).json(log(error)))
-            break;
+                  
+              break;
 
-        default:
-          console.error(' Impossible d accéder à la requête ! ');
-    }
+      default:
+        console.error(' Impossible d accéder à la requête ! ');
+      }
+  })
+  .catch(error => res.status(400).json({ error }));
 }
