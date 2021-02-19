@@ -47,7 +47,7 @@ exports.createSauce = (req, res, next) => {
     imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
   });
   sauce.save() // On sauvegarde la nouvelle sauce dans la DB.
-    .then(() => res.status(201).json({ message: 'Objet enregistré !'})) // Succès enregistrement.
+    .then(() => res.status(201).json({ message: 'Objet enregistré !!!!! !'})) // Succès enregistrement.
     .catch(error => res.status(400).json({ error })); // Erreur enregistrement.
 };
 
