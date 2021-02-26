@@ -10,7 +10,12 @@ const auth = require('../middleware/auth'); // Import du middleware d'authentifi
 
 const multer = require('../middleware/multer-config'); // Import du middleware de gestion de fichiers entrants dans les requêtes HTTP
 
+const deletePicErrorForm = require('../middleware/deletePicErrorForm');
+
 const sauceCtrl = require('../controllers/sauces'); // Import du controller pour la route 'sauce'
+
+
+
 
 // Routes 'sauce'.
 
@@ -19,8 +24,8 @@ const sauceCtrl = require('../controllers/sauces'); // Import du controller pour
 
 router.get('/', auth, sauceCtrl.getAllSauce); 
 router.get('/:id', auth, sauceCtrl.getOneSauce);
-router.post('/', auth, multer, sauceCtrl.createSauce);
-router.put('/:id', auth, multer, sauceCtrl.modifySauce);
+router.post('/', auth, multer,  sauceCtrl.createSauce, deletePicErrorForm);
+router.put('/:id', auth, multer,  sauceCtrl.modifySauce);
 router.delete('/:id', auth, sauceCtrl.deleteSauce);
 router.post('/:id/like', auth, sauceCtrl.likeSauce);
 

@@ -6,7 +6,6 @@ const mongoose = require('mongoose'); // Import de Mongoose
 
 const uniqueValidator = require('mongoose-unique-validator'); // On s'assure que l'email est unique et
                                                               // n'a pas déjà été utilisé pour créer un user.
-
 // Création d'un modèle User
 
 const userSchema = mongoose.Schema({
