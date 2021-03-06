@@ -3,8 +3,8 @@
 // A noter : pas besoin de mettre un champ pour l'Id puisqu'il est automatiquement généré par Mongoose.
 
 const mongoose = require('mongoose'); // Import de Mongoose
-const validateSauce = require('../middleware/validateSauce');
-const mongoSanitize  = require('express-mongo-sanitize');
+const validateSauce = require('../middleware/validateSauce');// Import de notre middelware qui va aider à sécuriser contre l'injection de code lors de la création et modification des sauces.
+const mongoSanitize  = require('express-mongo-sanitize');// Import de Mongo-Sanitize : empêche toute clé commençant par «$» d'être transmise au moteur de requête MongoDB.
 
 
 // Création du modèle 'sauce'.
@@ -23,7 +23,7 @@ const sauceSchema = mongoose.Schema({
   usersDisliked: {type: [String],required: false, default:[]},
 });
 
-sauceSchema.plugin(mongoSanitize );
+sauceSchema.plugin(mongoSanitize );// Ajout du plugin de mongo-sanitize
 
 module.exports = mongoose.model('Sauce', sauceSchema, ); // Exportation du schéma en tant que modèle Mongoose 
                                                        // Rend 'Sauce' disponible pour intéragir avec l' application.

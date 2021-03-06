@@ -6,8 +6,6 @@ const bcrypt = require('bcrypt'); // Bcrypt : pour hashage du mot de passe des u
 
 const jwt = require('jsonwebtoken'); // Jsonwebtoken : pour création d'un token d'authentification.
 
-var emailObfuscator = require('email-obfuscator');
-
 // Modèle 'user'
 
 const User = require('../models/user'); // Import du modèle userv : pour création et connexion des users
@@ -20,14 +18,14 @@ exports.signup = (req, res, next) => {
     bcrypt.hash(req.body.password, 10) // Fonction de hachage du mot de passe de la requête : ici on « sale » le MDP 10 fois.
       .then(hash => { // Récupération du MDP hashé
         const user = new User({  // Création du nouvel utilisateur avec le modèle Mongoose 'user'
-          email: emailObfuscator.obfuscate(req.body.email), // Récupération de l'e-mail dans la requête
+          email:req.body.email, // Récupération de l'e-mail dans la requête
           password: hash        // Récupération du MDP hashé
         });
         user.save()   // Enregistrement de l'user dans la BD.
           .then(() => res.status(201).json({ message: 'Utilisateur créé !' })) // Si succès de la création de l'user.
           .catch(error => res.status(400).json({ error }));
       })
-      .catch(error => res.status(500).json({ error })); // Si échec de la création de l'user
+      .catch(error => res.status(500).json({ error: 'Création d user échouée !' })); // Si échec de la création de l'user
   };
 
   // Connexion d'un user : existant dans la base de données.

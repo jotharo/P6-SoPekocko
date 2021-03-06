@@ -1,4 +1,4 @@
-var validate = require('mongoose-validator')
+var validate = require('mongoose-validator') // Import de Mongoose Validator : pour une sauvegarde de données propres et correctement formatées = application plus sécurisée contre les injections de code.
  
 exports.nameValidator = [
   validate({

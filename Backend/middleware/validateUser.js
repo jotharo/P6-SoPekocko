@@ -1,8 +1,8 @@
-var passwordValidator = require('password-validator');
+var passwordValidator = require('password-validator');// Import de Password-Validator : sécurité contre les injections + sécurisation du mdp de l'user.
 
 module.exports = (req,res,next) => {
  
-    // Create a schema
+    // Creation du schema
     var validateUser = new passwordValidator();
      
     validateUser

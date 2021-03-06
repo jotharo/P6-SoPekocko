@@ -38,21 +38,22 @@ exports.createSauce = (req, res, next) => {
 
 // Fonction de modification de sauce déjà existante dans la DB.
 exports.modifySauce = (req, res, next) => {
-  Sauce.findOne({_id: req.params.id}).then(sauce =>{
+  Sauce.findOne({_id: req.params.id})// Methode pour chercher une sauce précise par id.
+  .then(sauce =>{ // On change les champs + vérification avec schéma de la validité
     sauce.name = req.body.name
     sauce.manufacturer = req.body.manufacturer 
     sauce.description = req.body.description 
     sauce.mainPepper = req.body.mainPepper 
     sauce.heat = req.body.heat
 
-    if(req.file) {
+    if(req.file) { // On enregistre l'image si tout les champs sont valides
       const filename = sauce.imageUrl.split('/images/')[1]
       fs.remove(`images/${filename}`)
       sauce.imageUrl= `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }
-    return sauce.save()
-  }).then(() => res.status(200).json({ message: 'Objet modifié !'}))
-    .catch(error => res.status(400).json({ error }));  
+    return sauce.save()// On sauvegarde la sauce modifiée dans la DB.
+  }).then(() => res.status(200).json({ message: 'Objet modifié !'}))// Succès enregistrement.
+    .catch(error => res.status(400).json({ error }));  // Erreur enregistrement.
 };
 
 
