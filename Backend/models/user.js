@@ -6,6 +6,8 @@ const mongoose = require('mongoose'); // Import de Mongoose
 
 const uniqueValidator = require('mongoose-unique-validator'); // On s'assure que l'email est unique et
                                                               // n'a pas déjà été utilisé pour créer un user.
+const mongoSanitize  = require('express-mongo-sanitize');
+
 // Création d'un modèle User
 
 const userSchema = mongoose.Schema({
@@ -13,7 +15,7 @@ const userSchema = mongoose.Schema({
   password: { type: String, required: true }
 });
 
-userSchema.plugin(uniqueValidator); // Ajout du plugin de vérification d'email unique au schéma.
+userSchema.plugin(uniqueValidator, mongoSanitize ); // Ajout du plugin de vérification d'email unique au schéma.
 
 module.exports = mongoose.model('User', userSchema);// Exportation du schéma en tant que modèle Mongoose 
                                                     // Rend 'User' disponible pour intéragir avec l' application.

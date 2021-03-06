@@ -37,22 +37,23 @@ exports.createSauce = (req, res, next) => {
 };
 
 // Fonction de modification de sauce déjà existante dans la DB.
-exports.modifySauce = (req, res, next) => { 
-  const sauceObject = req.file ? ( // sauceObject regarde si req.file existe ou non + récupération des infos sauce.
-    Sauce.findOne({_id: req.params.id})
-    .then(sauce => {              // On supprime l'ancienne image du serveur
+exports.modifySauce = (req, res, next) => {
+  Sauce.findOne({_id: req.params.id}).then(sauce =>{
+    sauce.name = req.body.name
+    sauce.manufacturer = req.body.manufacturer 
+    sauce.description = req.body.description 
+    sauce.mainPepper = req.body.mainPepper 
+    sauce.heat = req.body.heat
+
+    if(req.file) {
       const filename = sauce.imageUrl.split('/images/')[1]
       fs.remove(`images/${filename}`)
-    }),
-    {
-      ...JSON.parse(req.body.sauce),// Modification des données.
-      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`// Modification nouvelle image.
+      sauce.imageUrl= `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }
-   ) : { ...req.body };
-  Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id }) // Enregistrement dans la BD.
-    .then(() => res.status(200).json({ message: 'Objet modifié !'}))
-    .catch(error => res.status(400).json({ error }));
-  };
+    return sauce.save()
+  }).then(() => res.status(200).json({ message: 'Objet modifié !'}))
+    .catch(error => res.status(400).json({ error }));  
+};
 
 
 

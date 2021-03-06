@@ -4,6 +4,7 @@
 
 const mongoose = require('mongoose'); // Import de Mongoose
 const validateSauce = require('../middleware/validateSauce');
+const mongoSanitize  = require('express-mongo-sanitize');
 
 
 // Création du modèle 'sauce'.
@@ -21,6 +22,8 @@ const sauceSchema = mongoose.Schema({
   usersLiked: {type: [String], required: false, default:[]},
   usersDisliked: {type: [String],required: false, default:[]},
 });
+
+sauceSchema.plugin(mongoSanitize );
 
 module.exports = mongoose.model('Sauce', sauceSchema, ); // Exportation du schéma en tant que modèle Mongoose 
                                                        // Rend 'Sauce' disponible pour intéragir avec l' application.
