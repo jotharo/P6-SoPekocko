@@ -22,7 +22,7 @@
 
 ***
 
-# 🔨 Installation 
+# 🔨 Get Started !
 
 Clone this project from GitHub.
 
